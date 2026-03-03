@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+  <input type="hidden" id="tech" value="<%= tech || 'impersonation' %>">
+
+  <div class="main-container">
+    <div class="gauge-container">
+      <!-- ✅ 跟 Good 一樣：Credibility 用 meter -->
+      <div class="gauge-wrapper">
+        <div class="meter-bar">
+          <div id="credibilityMeterFill" class="meter-fill"></div>
+        </div>
+        <span>Credibility: <span id="credibility"><%= credibility %></span></span>
+      </div>
+
+      <!-- ✅ 保留 Bad 的 Morality Gauge（其實 Good 也一樣） -->
+      <div class="gauge-wrapper">
+        <canvas id="moralityGauge"></canvas>
+        <span>Morality <span id="morality" style="display: none;"><%= morality %></span></span>
+      </div>
+    </div>
+
+    <div class="context">
+      <p><%= context %></p>
+    </div>
+
+    <!-- ✅ 跟 Good 一樣：choices shuffle，但送 index -->
+    <div class="options">
+      <% if (choices && Array.isArray(choices)) { %>
+        <% const shuffledChoices = [...choices].sort(() => Math.random() - 0.5); %>
+        <% shuffledChoices.forEach(choice => { %>
+          <button type="button" onclick="performAction('<%= choice.index %>')">
+            <%= choice.text %>
+          </button>
+        <% }); %>
+      <% } else { %>
+        <p>⚠️ 無可用選項</p>
+      <% } %>
+    </div>
+
+    <div id="result-message" style="display:none; padding:10px; margin-top:10px; border-radius:5px;"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/script.js"></script>
+  <script>
+    // Prevent back navigation (跟 Good 一樣)
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+      history.go(1);
+    };
+  </script>
+</body>
+
+</html>

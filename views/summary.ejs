@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Summary - Fake Villain</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Times New Roman', serif;
+      background: linear-gradient(135deg, #3a3a3a);
+      color: white;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .container {
+      position: relative;
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* ===== Pages ===== */
+
+    .page {
+      position: absolute;
+      width: 90%;
+      max-width: 900px;
+      text-align: center;
+      transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
+      opacity: 0;
+    }
+
+    .page1 {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 1;
+    }
+
+    .page1.hide {
+      transform: translate(-50%, -150%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .page2 {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, 100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .page2.show {
+      transform: translate(-50%, -50%);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* ===== Header ===== */
+
+    .title {
+      font-size: 3rem;
+      font-weight: bold;
+      margin-bottom: 14px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .subtitle {
+      font-size: 20px;
+      margin-bottom: 22px;
+      opacity: 0.95;
+    }
+
+    /* ===== Panel ===== */
+
+    .panel {
+      background-color: rgba(0, 0, 0, 0.22);
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.28);
+      padding: 28px;
+    }
+
+    /* ===== Scores ===== */
+
+    .score-container {
+      display: flex;
+      justify-content: center;
+      gap: 22px;
+      margin: 20px 0 22px;
+      flex-wrap: wrap;
+    }
+
+    .score-box {
+      background-color: rgba(255, 255, 255, 0.18);
+      border-radius: 12px;
+      padding: 18px 20px;
+      width: 360px;
+      max-width: 45%;
+      min-width: 280px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.18);
+    }
+
+    .score-title {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .score-value {
+      font-size: 3rem;
+      font-weight: bold;
+    }
+
+    /* ===== Table ===== */
+
+    .section-title {
+      font-size: 3rem;
+      font-weight: 800;
+      margin: 18px 0 10px;
+    }
+
+    table {
+      width: 100%;
+      max-width: 820px;
+      margin: 0 auto;
+      border-collapse: collapse;
+      color: white;
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.65);
+      font-size: 20px;
+    }
+
+    th {
+      font-weight: 700;
+    }
+
+    td.badge-col {
+      text-align: left;
+      width: 56%;
+    }
+
+    td.center {
+      text-align: center;
+    }
+
+    /* ===== Badges ===== */
+
+    .badge-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+      margin-top: 18px;
+      max-width: 650px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .badge-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge-img {
+      width: 90px;
+      height: 90px;
+      border: 2px solid white;
+      border-radius: 50%;
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.35);
+      object-fit: cover;
+      background: white;
+    }
+
+    .badge-name {
+      font-size: 20px;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    /* ===== Completion code ===== */
+
+    .code-box {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 14px;
+      background-color: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.18);
+    }
+
+    .code-label {
+      font-size: 20px;
+      opacity: 0.9;
+      margin-bottom: 6px;
+    }
+
+    .code-value {
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .code-hint {
+      margin-top: 6px;
+      font-size: 20px;
+      opacity: 0.85;
+    }
+
+    /* ===== Buttons ===== */
+
+    .btn-row {
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 12px 22px;
+      font-family: 'Times New Roman', serif;
+      font-size: 20px;
+      background-color: #fff;
+      color: #003087;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.22);
+    }
+
+    button:hover {
+      background-color: #eaeaea;
+    }
+
+    /* ===== Confetti ===== */
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      animation: fall linear infinite;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0.9;
+      }
+    }
+
+    .confetti.fade-out {
+      animation: fadeOut 0.8s forwards;
+    }
+
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+      }
+
+      to {
+        opacity: 0;
+        transform: translateY(120vh);
+      }
+    }
+
+    @media (max-width: 700px) {
+      .title {
+        font-size: 3rem;
+      }
+
+      .section-title {
+        font-size: 3rem;
+      }
+
+      .badge-list {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .score-box {
+        max-width: 100%;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <!-- ================= Page 1 ================= -->
+
+    <div class="page page1 panel">
+      <div class="title">Congratulations!</div>
+      <div class="subtitle">Congratulations on completing all badges! Here are your game results:</div>
+
+      <div class="score-container">
+        <div class="score-box">
+          <div class="score-title">Credibility</div>
+          <div class="score-value"><%= credibility %></div>
+        </div>
+        <div class="score-box">
+          <div class="score-title">Morality</div>
+          <div class="score-value"><%= morality %></div>
+        </div>
+      </div>
+
+      <div class="section-title">Score details for each badge</div>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align:left;">Badges</th>
+            <th class="center">Credibility</th>
+            <th class="center">Morality</th>
+          </tr>
+        </thead>
+
+        <%
+          const badgeNameMap = {
+            impersonation: "Impersonation",
+            emotion: "Emotion",
+            polarization: "Polarization",
+            conspiracy: "Conspiracy",
+            discredit: "Discredit",
+            trolling: "Trolling"
+          };
+        %>
+
+        <tbody>
+          <% if (scores && scores.length) { %>
+            <% scores.forEach(function(score, idx) { %>
+              <tr>
+                <td class="badge-col">
+                  Badge <%= idx + 1 %> (<%= badgeNameMap[score.tech] || score.tech %>)
+                </td>
+                <td class="center"><%= score.credibility %></td>
+                <td class="center"><%= score.morality %></td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="3" class="center">No score data</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+
+      <div class="btn-row">
+        <button id="toPage2Btn">CONTINUE</button>
+      </div>
+    </div>
+
+    <!-- ================= Page 2 ================= -->
+
+    <div class="page page2 panel">
+      <div class="title">Congratulations!</div>
+      <div class="subtitle">Congratulations on completing all badges! Here are your game results:</div>
+
+      <div class="section-title">Badges Earned</div>
+
+      <div class="badge-list">
+        <% badges.forEach(badge => { %>
+          <div class="badge-item">
+            <img src="<%= badge.image %>" class="badge-img">
+            <div class="badge-name"><%= badge.name %></div>
+          </div>
+        <% }) %>
+      </div>
+
+      <div class="code-box">
+        <div class="code-label">Your completion code:</div>
+        <div class="code-value">BG#L2X6R</div>
+        <div class="code-hint">Please copy this code and return to the survey.</div>
+      </div>
+
+      <div class="btn-row">
+        <button id="backBtn">BACK TO SCORE SUMMARY</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Confetti
+    const colors = ['#FFD700', '#FF0000', '#00FF00', '#0000FF', '#FF69B4', '#00FFFF', '#FFFFFF'];
+
+    function spawnConfetti() {
+      for (let i = 0; i < 150; i++) {
+        const c = document.createElement('div');
+        c.classList.add('confetti');
+        const size = Math.random() * 8 + 4;
+        c.style.width = `${size}px`;
+        c.style.height = `${size}px`;
+        c.style.left = `${Math.random() * 100}vw`;
+        c.style.top = `-${size}px`;
+        c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        c.style.animationDuration = `${Math.random() * 3 + 2}s`;
+        c.style.animationDelay = `${Math.random() * 2}s`;
+        document.body.appendChild(c);
+      }
+    }
+
+    spawnConfetti();
+
+    function goPage2() {
+      document.querySelector('.page1').classList.add('hide');
+      document.querySelector('.page2').classList.add('show');
+      document.querySelectorAll('.confetti').forEach(el => el.classList.add('fade-out'));
+    }
+
+    function goPage1() {
+      document.querySelector('.page2').classList.remove('show');
+      document.querySelector('.page1').classList.remove('hide');
+
+      setTimeout(() => {
+        document.querySelectorAll('.confetti').forEach(el => el.remove());
+        spawnConfetti();
+      }, 50);
+    }
+
+    document.getElementById('toPage2Btn').addEventListener('click', goPage2);
+    document.getElementById('backBtn').addEventListener('click', goPage1);
+  </script>
+</body>
+
+</html>
