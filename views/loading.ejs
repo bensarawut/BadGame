@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loading - Fake Villain</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(135deg,#3a3a3a);
+      font-family: "Times New Roman", Times, serif;
+      color: #ffffff;
+    }
+
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+    .progress-bar {
+      width: 60%;
+      height: 20px;
+      background-color: #ffffff33;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background-color: #ffffff;
+    }
+    .loading-text { font-size: 3rem; font-weight: bold; }
+    .percent { font-size: 20px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="loading-container">
+    <p class="loading-text" id="loadingTitle">Loading...</p>
+    <div class="progress-bar">
+      <div class="progress-fill" id="fill"></div>
+    </div>
+    <div class="percent" id="percent">0%</div>
+  </div>
+
+  <script>
+    // ✅ 6個技術名稱對照表
+    const techNames = {
+      impersonation: "Impersonation",
+      emotion: "Emotion",
+      polarization: "Polarization",
+      conspiracy: "Conspiracy",
+      discredit: "Discredit",
+      trolling: "Trolling"
+    };
+
+    // ✅ 從 URL 讀取 tech 參數
+    const params = new URLSearchParams(window.location.search);
+    const tech = params.get('tech') || 'impersonation';
+
+    // ✅ 顯示正確技術名稱
+    document.getElementById('loadingTitle').textContent = techNames[tech.toLowerCase()] || "Loading...";
+
+    // ✅ 進度條動畫
+    const fill = document.getElementById('fill');
+    const percentText = document.getElementById('percent');
+    let startTime = null;
+    const duration = 800;
+
+    function easeIn(t) { return t * t * t; }
+    function animateProgress(ts) {
+      if (!startTime) startTime = ts;
+      const p = Math.min((ts - startTime) / duration, 1);
+      const eased = easeIn(p);
+      fill.style.width = (eased * 100) + '%';
+      percentText.textContent = Math.floor(eased * 100) + '%';
+      if (p < 1) requestAnimationFrame(animateProgress);
+      else window.location.href = '/game';
+    }
+    requestAnimationFrame(animateProgress);
+  </script>
+</body>
+</html>

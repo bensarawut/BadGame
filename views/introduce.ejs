@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bad Game - Fake Villain</title>
+  <style>
+    body {
+      font-family: "Times New Roman", Times, serif;
+      background: linear-gradient(135deg, #3a3a3a);
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+    }
+
+    .intro-container {
+      display: flex;
+      max-width: 900px;
+      margin: 0 auto;
+      background: #dcdcdc;
+      border: 2px solid #000;
+      width: 100%;
+      min-height: 500px;
+      box-sizing: border-box;
+    }
+
+    .mission-section {
+      flex: 1;
+      padding: 40px;
+      background: #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+
+    .mission-section p {
+      font-size: 20px;
+      margin-bottom: 30px;
+      text-align: center;
+      max-width: 85%;
+    }
+
+
+    .gauge-container {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      margin-bottom: 30px;
+      width: 100%;
+    }
+
+    .gauge-wrapper {
+      text-align: center;
+      flex: 0 0 auto;
+    }
+
+    .gauge-wrapper canvas {
+      width: 150px;
+      height: 150px;
+    }
+
+    .gauge-label {
+      margin-top: 15px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .status-good {
+      color: green;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .status-bad {
+      color: red;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .start-button {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .start-button button {
+      padding: 12px 24px;
+      font-size: 20px;
+      font-family: 'Times New Roman', serif;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .start-button button:hover {
+      background-color: #219653;
+    }
+
+    @media (max-width: 600px) {
+      .intro-container {
+        flex-direction: column;
+      }
+
+      .mission-section {
+        border-top: 2px solid #888;
+        padding: 20px;
+      }
+
+      .gauge-container {
+        flex-direction: column;
+        gap: 30px;
+      }
+
+      .mission-section p {
+        max-width: 90%;
+        font-size: 20px;
+      }
+
+      .gauge-wrapper canvas {
+        width: 120px;
+        height: 120px;
+      }
+
+      .gauge-label {
+        font-size: 18px;
+      }
+
+      .start-button button {
+        font-size: 18px;
+        padding: 10px 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="intro-container">
+    <div class="mission-section">
+      <p>
+        Your mission is to maintain low <strong>Morality</strong> throughout the game.
+        If your <strong>Morality</strong> rises too high, you will fail the game (Game Over).
+      </p>
+
+      <div class="gauge-container">
+        <!-- ✅ 左邊：Low morality (GOOD) -->
+        <div class="gauge-wrapper">
+          <canvas id="morality_Low_Gauge"></canvas>
+          <div class="gauge-label">Morality</div>
+          <div id="morality_Low_Status" class="status-good">GOOD!</div>
+        </div>
+
+        <!-- ✅ 右邊：High morality (BAD) -->
+        <div class="gauge-wrapper">
+          <canvas id="morality_High_Gauge"></canvas>
+          <div class="gauge-label">Morality</div>
+          <div id="morality_High_Status" class="status-bad">BAD!</div>
+        </div>
+      </div>
+
+      <div class="start-button">
+        <button onclick="window.location.href='/loading'">Go</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      initializeGauges();
+    });
+
+    function initializeGauges() {
+      const moralityLowCanvas = document.getElementById('morality_Low_Gauge');
+      const moralityHighCanvas = document.getElementById('morality_High_Gauge');
+
+      if (!moralityLowCanvas || !moralityHighCanvas) return;
+
+      moralityLowCanvas.width = 150;
+      moralityLowCanvas.height = 150;
+      moralityHighCanvas.width = 150;
+      moralityHighCanvas.height = 150;
+
+      const moralityLowCtx = moralityLowCanvas.getContext('2d');
+      const moralityHighCtx = moralityHighCanvas.getContext('2d');
+
+      // 你原本是 (20) 與 (-40) 的示意值，我保留，但語意改成：
+      // Low morality = GOOD → 指針偏左/低（用 -40）
+      // High morality = BAD → 指針偏右/高（用 20）
+      drawGauge(moralityLowCtx, -40, 'morality_Low_Status', 'low');
+      drawGauge(moralityHighCtx, 20, 'morality_High_Status', 'high');
+    }
+
+    /**
+     * mode:
+     * - 'low' 代表「低 morality 好」
+     * - 'high' 代表「高 morality 危險」
+     */
+    function drawGauge(ctx, value, statusId, mode) {
+      const canvas = ctx.canvas;
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const radius = canvas.width / 2;
+      const gaugeValue = Math.max(-100, Math.min(100, value));
+      const statusElement = document.getElementById(statusId);
+
+      // 背景半圓
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius * 0.75, Math.PI, 0, false);
+      ctx.lineWidth = 15;
+      ctx.strokeStyle = '#bdc3c7';
+      ctx.stroke();
+
+      // 紅色危險弧線：固定 1/5 半圓
+      const fixedFillAngle = 0.2 * Math.PI;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius * 0.75, Math.PI, Math.PI + fixedFillAngle, false);
+      ctx.lineWidth = 15;
+      ctx.strokeStyle = '#e74c3c';
+      ctx.stroke();
+
+      // 指針
+      const angle = (gaugeValue / 100) * Math.PI;
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate(angle);
+      ctx.beginPath();
+      ctx.moveTo(-4, 0);
+      ctx.lineTo(4, 0);
+      ctx.lineTo(0, -radius * 0.7);
+      ctx.closePath();
+      ctx.fillStyle = '#000';
+      ctx.fill();
+      ctx.restore();
+
+      // ✅ Bad game：morality 越高越危險 → 判斷反過來
+      // 你原本門檻是 -20：我保留，意思是「超過 -20 就偏高了」
+      if (gaugeValue >= -20) {
+        // 偏高（Bad game：危險）
+        statusElement.textContent = (mode === 'low') ? 'RISKY' : 'BAD!';
+        statusElement.className = 'status-bad';
+      } else {
+        // 偏低（Bad game：安全）
+        statusElement.textContent = (mode === 'low') ? 'GOOD!' : 'OK';
+        statusElement.className = 'status-good';
+      }
+    }
+  </script>
+</body>
+
+</html>
