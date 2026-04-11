@@ -1,0 +1,320 @@
+/* ===== Base ===== */
+body {
+  font-family: 'Times New Roman', serif;
+  font-size: 20px;
+  /* Standardize base font size */
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  background: linear-gradient(135deg, #3a3a3a);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* 統一 h1 字體大小 - Title remains larger */
+h1 {
+  font-size: 48px;
+  /* Standardized title size */
+}
+
+/* Ensure consistent font size for other text elements */
+p,
+span,
+div,
+li,
+a,
+button,
+input,
+select,
+textarea {
+  font-size: 20px;
+  /* Inherit 20px */
+}
+
+/* ===== Main container (✅關鍵：改成固定舞台 + flex 分配區塊) ===== */
+.main-container {
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+
+  height: 600px;
+  /* 你原本就是 600，保留 */
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+
+  /* ✅ 不要讓內容跑出白底外 */
+  overflow: hidden;
+
+  transform: scale(1.25);
+  transform-origin: center;
+
+  /* ✅ 用 flex 切出 gauge/context/options 三塊 */
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Gauge Area ===== */
+.gauge-container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin-bottom: 10px;
+  gap: 60px !important;
+  padding: 20px 0;
+  width: 100%;
+  max-width: 100%;
+  min-height: 180px;
+  position: relative;
+}
+
+/* 左上角 Credibility HUD */
+.gauge-container .gauge-wrapper:first-child {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  transform: none;
+  z-index: 50;
+  width: 220px !important;
+  min-height: unset !important;
+  gap: 4px;
+}
+
+/* 縮小文字 - Update to match consistency if possible, or keep slightly smaller if necessary for layout? User said ALL consistency. Let's try to keep it consistent or very close. */
+.gauge-container .gauge-wrapper:first-child span {
+  font-size: 20px;
+  /* 20px */
+}
+
+/* 縮小進度條 */
+.gauge-container .gauge-wrapper:first-child .meter-bar {
+  width: 200px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.gauge-wrapper {
+  margin: 0 !important;
+  text-align: center;
+  flex: 0 0 auto;
+  width: 150px !important;
+  min-height: 200px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.gauge-wrapper canvas {
+  display: block !important;
+  width: 150px !important;
+  height: 150px !important;
+  margin: 0 auto !important;
+  position: relative !important;
+  z-index: 10 !important;
+  aspect-ratio: 1/1 !important;
+  object-fit: contain !important;
+  background-color: #ffffff !important;
+}
+
+.gauge-wrapper span {
+  display: block;
+  font-weight: bold;
+  margin-top: 5px;
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 150px;
+  font-size: 20px;
+  /* 20px */
+}
+
+/* ===== Context (✅關鍵：可伸縮 + 內容過長可滾動) ===== */
+.context {
+  text-align: center;
+  /* Changed to center */
+  font-size: 20px;
+  /* 20px - Consistency */
+  margin: 6px 0;
+  padding: 10px;
+  position: relative;
+  transition: transform 0.5s ease-in-out;
+
+  /* ✅ 讓 context 吃掉剩餘空間 */
+  flex: 1 1 auto;
+
+
+}
+
+.context p {
+  margin: 0;
+  padding: 10px;
+  width: 100%;
+  text-align: center !important;
+  /* Changed to center */
+  font-size: 20px;
+  /* 20px */
+}
+
+/* ===== Options (✅關鍵：固定高度區 + 三個按鈕等高 + 按鈕內部滾動) ===== */
+.options {
+  margin-top: 8px;
+  text-align: center;
+  position: relative;
+  transition: transform 0.5s ease-in-out;
+
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  align-items: stretch;
+
+  /* ✅ 固定成底部一塊 */
+  flex: 0 0 180px;
+  /* 你可以調 200~260 */
+  overflow: hidden;
+}
+
+.options button {
+  flex: 1 1 0;
+  font-family: 'Times New Roman', serif;
+  font-size: 20px;
+  /* 20px */
+  font-weight: 500;
+
+  padding: 10px 12px;
+  text-align: center;
+  /* Changed to center */
+  background-color: #d3d3d3;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+
+  /* ✅ 三個按鈕等高 */
+  height: 100%;
+
+
+
+  line-height: 1.3;
+}
+
+.options button:hover {
+  background-color: #c0c0c0;
+}
+
+/* (可選) 美化捲軸 */
+.options button::-webkit-scrollbar {
+  width: 6px;
+}
+
+.options button::-webkit-scrollbar-thumb {
+  background: #aaa;
+  border-radius: 4px;
+}
+
+/* ===== Intro ===== */
+.intro-container {
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: justify;
+  max-width: 500px;
+  width: 100%;
+}
+
+.intro-container h1 {
+  font-size: 48px;
+  /* Title larger */
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.intro-container h2 {
+  font-size: 20px;
+  /* Slightly larger than body, or make same? User said consistency. Let's make it distinct but consistent relative size? Or just 1em? Let's do 1.25em (25px) */
+  color: #444;
+  margin-bottom: 15px;
+}
+
+.intro-container p {
+  font-size: 20px;
+  /* 20px */
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.start-button {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.start-button button {
+  display: block;
+  font-family: 'Times New Roman', serif;
+  width: 200px;
+  margin: 10px auto;
+  padding: 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 20px;
+  /* 20px */
+}
+
+.start-button button:hover {
+  background-color: #45a049;
+}
+
+/* ===== Fade animations (保留你原本) ===== */
+.context,
+.options {
+  position: relative;
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.context.fade-out,
+.options.fade-out {
+  opacity: 0 !important;
+  transition: opacity 0.5s ease;
+}
+
+.context.fade-in,
+.options.fade-in {
+  opacity: 1 !important;
+  transition: opacity 0.5s ease;
+}
+
+/* ===== Victory image ===== */
+.victory-image {
+  max-width: 200px;
+  margin: 20px auto;
+  display: block;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== Meter ===== */
+.meter-bar {
+  width: 250px;
+  height: 25px;
+  background-color: #e0e0e0;
+  border: 1px solid #777;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.meter-fill {
+  width: 0%;
+  height: 100%;
+  background-color: #3498db;
+  transition: width 0.5s ease-in-out;
+}

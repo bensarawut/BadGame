@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Victory - <%= badgeName %></title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Times New Roman', serif;
+      background-color: #3a3a3a;
+      color: white;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-size: 20px;
+      /* Standardized */
+    }
+
+    .container {
+      position: relative;
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .page {
+      position: absolute;
+      width: 80%;
+      max-width: 500px;
+      text-align: center;
+      transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+    }
+
+    .page1 {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 1;
+    }
+
+    .page1.hide {
+      transform: translate(-50%, -150%);
+      opacity: 0;
+    }
+
+    .page2 {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, 100%);
+      opacity: 0;
+      width: 90%;
+      max-width: 700px;
+    }
+
+    .page2.show {
+      transform: translate(-50%, -50%);
+      opacity: 1;
+    }
+
+    h1 {
+      font-size: 3rem;
+      /* Standardized title size */
+      margin: 0;
+      text-align: center;
+    }
+
+    .technique {
+      font-size: 40px;
+      /* Standardized to 20px */
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    .badge-img {
+      width: 80px;
+      height: 80px;
+      display: block;
+      border: 2px solid black;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+      object-fit: cover;
+      background: white;
+      /* 確保空白時是白底 */
+    }
+
+    /* 🔥 未解鎖徽章的黑框 */
+    .badge-img.locked {
+      background: none;
+      /* 沒有圖片背景 */
+      border: 2px solid black;
+      /* 黑色邊框 */
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+    }
+
+    .badge-img.locked[src="/Badges/Locked_Badges/locked.jpg"] {
+      content: none;
+      /* 即使有src，也不顯示圖片 */
+    }
+
+    .badge-img.locked::after {
+      content: "";
+      /* 生成一個偽元素框 */
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border: 2px solid black;
+      /* 黑框 */
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+      background-color: transparent;
+    }
+
+    .badge-list {
+      display: grid;
+      grid-template-columns: repeat(2, 140px);
+      /* 固定兩欄各140px */
+      column-gap: 80px;
+      /* 欄間距 */
+      row-gap: 40px;
+      justify-content: center;
+      /* 整個區塊置中 */
+      margin: 20px auto 0;
+    }
+
+    .badge-item {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 140px;
+      height: 150px;
+      box-sizing: border-box;
+      gap: 30px;
+      /* 圖片和文字之間保持一致間距 */
+    }
+
+    .badge-item p {
+      height: 20px;
+      /* 固定文字區域高度 */
+      line-height: 20px;
+      margin: 0;
+      /* 取消預設 margin */
+      font-size: 18px;
+    }
+
+    .page2 h1 {
+      font-size: 3rem;
+      /* Standardized title size */
+      font-weight: bold;
+    }
+
+    .start-button {
+      margin-top: 25px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-family: 'Times New Roman', serif;
+      font-size: 20px;
+      /* Standardized to 20px */
+      background-color: #fff;
+      color: #003087;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background-color: #e0e0e0;
+    }
+
+    /* 🎉 confetti */
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      animation: fall linear infinite;
+      z-index: 1000;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0.9;
+      }
+    }
+
+    .confetti.fade-out {
+      animation: fadeOut 1s forwards;
+    }
+
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+      }
+
+      to {
+        opacity: 0;
+        transform: translateY(120vh);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Page1: 顯示新獲得的徽章 -->
+    <div class="page page1">
+      <h1 style="position: relative; top: -150px; right:50px; white-space: nowrap;">
+        NEW TECHNIQUE MASTERED!
+      </h1>
+
+      <div class="technique"><%= badgeName %></div>
+
+      <img src="<%= badgeImage %>" alt="<%= badgeName %> Icon"
+        style="width: 100px; margin: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.4);">
+
+      <p style="font-size: 20px; text-align: center;"><%= badgeDescription %></p>
+
+      <button id="continueButton" style="display: block; margin: 20px auto 0;">CONTINUE</button>
+    </div>
+
+    <!-- Page2: 顯示所有徽章 -->
+    <div class="page page2">
+      <h1>Technique Overview</h1>
+      <p>Explore all the badges you have earned:</p>
+
+      <div class="badge-list">
+        <% badges.forEach(badge => { %>
+          <div class="badge-item">
+            <img src="<%= badge.image %>" alt="<%= badge.name %>" class="badge-img">
+            <p><%= badge.name %></p>
+          </div>
+        <% }) %>
+
+        <!-- 顯示未解鎖徽章 -->
+        <% const allBadges = ['Impersonation','Emotion','Polarization','Conspiracy','Discredit','Trolling']; %>
+        <% allBadges.forEach(b => { if (!badges.some(bb => bb.name === b)) { %>
+          <div class="badge-item">
+            <img src="/Badges/Locked_Badges/locked.jpg" alt="<%= b %> Locked" class="badge-img locked">
+            <p><%= b %></p>
+          </div>
+        <% }}) %>
+      </div>
+
+      <!-- 下一關按鈕 -->
+      <div class="start-button" style="text-align: center;">
+        <button type="button" onclick="window.location.href='/loading?tech=<%= nextTech %>'"
+          style="display: inline-block;">CONTINUE</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 🎉 confetti 效果
+    const colors = ['#FFD700', '#FF0000', '#00FF00', '#0000FF', '#FF69B4', '#00FFFF', '#FFFFFF'];
+    for (let i = 0; i < 150; i++) {
+      const c = document.createElement('div');
+      c.classList.add('confetti');
+      const size = Math.random() * 8 + 4;
+      c.style.width = `${size}px`;
+      c.style.height = `${size}px`;
+      c.style.left = `${Math.random() * 100}vw`;
+      c.style.top = `-${size}px`;
+      c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      c.style.animationDuration = `${Math.random() * 3 + 2}s`;
+      c.style.animationDelay = `${Math.random() * 2}s`;
+      document.body.appendChild(c);
+    }
+
+    // Page1 → Page2
+    function nextPage() {
+      document.querySelector('.page1').classList.add('hide');
+      document.querySelector('.page2').classList.add('show');
+      document.querySelectorAll('.confetti').forEach(el => el.classList.add('fade-out'));
+    }
+    document.getElementById('continueButton').addEventListener('click', nextPage);
+  </script>
+</body>
+
+</html>
